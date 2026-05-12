@@ -89,7 +89,18 @@ def start(message):
         "Попробуй прямо сейчас! ПЕРВОЕ СЛОВО НАХОДИТСЯ НА СТЕНДЕ НАПРОТИВ ВХОДА. Найди здесь графити, оно будет первым, а после ответь на вопрос\n\n"
         "Вопрос №1 Напиши год основания нашего факультета\n"
     )
-
+@bot.message_handler(commands=['help'])
+def help_command(message):
+   markup=
+types.ReplyKeyboardMarkup(resize_keyboard=
+True, one_time_keyboard=True)
+    button = types.KeyboardButton("/start")
+    markup.add(button)
+    bot.send_message(
+        message.chat.id,
+        "Нажмите кнопку ниже, чтобы начать квест.",
+        reply_markup=markup
+    )
 @bot.message_handler(func=lambda m: True, content_types=['text'])
 def handle_text(message):
     uid = message.from_user.id

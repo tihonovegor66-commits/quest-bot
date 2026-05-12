@@ -90,14 +90,14 @@ def start(message):
         "Попробуй прямо сейчас! ПЕРВОЕ СЛОВО НАХОДИТСЯ НА СТЕНДЕ НАПРОТИВ ВХОДА. Найди здесь графити, оно будет первым, а после ответь на вопрос\n\n"
         "Вопрос №1 Напиши год основания нашего факультета\n"
     )
+# ---------- ОБРАБОТЧИК /help ----------
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    bot.send_message(
-        message.chat.id,
-        "Если вы застряли, Пишите ему @dobriy_led.\n"
-        "Или нажмите кнопку ниже, чтобы начать заново.",
+    bot.reply_to(
+        message,
+        "Если вы застряли, напишите.\n"
+        "Чтобы начать квест заново, отправьте команду /start."
     )
-
 @bot.message_handler(func=lambda m: True, content_types=['text'])
 def handle_text(message):
     uid = message.from_user.id

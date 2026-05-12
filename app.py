@@ -96,7 +96,6 @@ def help_command(message):
         message.chat.id,
         "Если вы застряли, Пишите ему @dobriy_led.\n"
         "Или нажмите кнопку ниже, чтобы начать заново.",
-        reply_markup=keyboard
     )
 
 @bot.message_handler(func=lambda m: True, content_types=['text'])

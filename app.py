@@ -135,8 +135,38 @@ def run_flask():
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
 
+import time # <-- Убедитесь, что этот импорт есть в начале файла вместе с другими
+
+# ... весь ваш предыдущий код (обработчики, веб-сервер) ...
+
+def start_polling():
+    """Функция для запуска опроса в бесконечном цикле с обработкой ошибок."""
+    while True:
+        try:
+            print("Запуск/перезапуск опроса бота...")
+            # Запускаем polling с none_stop=True, чтобы он не падал от мелких сетевых ошибок
+            bot.polling(none_stop=True)
+        except Exception as e:
+            # Если случилась более серьёзная ошибка (например, конфликт обновлений после сна)
+            print(f"Ошибка в работе бота: {e}")
+            print("Перезапуск через 10 секунд...")
+            bot.stop_polling()  # Всегда останавливаем предыдущий опрос перед перезапуском
+            time.sleep(10)      # Даем серверам Telegram небольшой перерыв
+        else:
+            # Если bot.polling() завершился без ошибок (например, по команде), выходим из цикла
+            print("Опрос бота планово завершён.")
+            break
+
+# Точка входа для Render
 if __name__ == "__main__":
     print("Бот запущен...")
     bot.remove_webhook()
-    threading.Thread(target=bot.polling, kwargs={"none_stop": True}).start()
+    # Запускаем наш улучшенный опрос в отдельном потоке
+    polling_thread = threading.Thread(target=start_polling)
+    polling_thread.daemon = True # Поток закроется вместе с основной программой
+    polling_thread.start()
+    # Запускаем веб-сервер Flask для поддержания Render в активном состоянии
     run_flask()
+
+
+

@@ -1,4 +1,5 @@
 import telebot
+from telebot import types
 from flask import Flask
 import threading
 import os
@@ -91,16 +92,36 @@ def start(message):
     )
 @bot.message_handler(commands=['help'])
 def help_command(message):
-   markup=
-types.ReplyKeyboardMarkup(resize_keyboard=
-True, one_time_keyboard=True)
-    button = types.KeyboardButton("/start")
-    markup.add(button)
+    # Создаём клавиатуру с одной кнопкой
+    keyboard = types.InlineKeyboardMarkup()
+    # Кнопка с текстом и callback_data (по нажатию будет вызов /start)
+    start_button = types.InlineKeyboardButton(
+        text="🚀 Начать квест",
+        callback_data="start_quest"
+    )
+    keyboard.add(start_button)
+
     bot.send_message(
         message.chat.id,
-        "Нажмите кнопку ниже, чтобы начать квест.",
-        reply_markup=markup
+        "Если вы застряли, просто введите кодовое слово ещё раз.\n"
+        "Или нажмите кнопку ниже, чтобы начать заново.",
+        reply_markup=keyboard
     )
+
+# Обработчик нажатия на inline-кнопку
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callback(call):
+    if call.data == "start_quest":
+        # Симулируем команду /start, вызывая ту же логику
+        # Можно либо перенаправить на обработчик start, либо просто установить состояние
+        user_states[call.from_user.id] = 0
+        bot.answer_callback_query(call.id, "Квест начат заново!")
+        bot.send_message(
+            call.message.chat.id,
+            f"Привет, {call.from_user.first_name}! 🕵️\n"
+            "Я бот-квест. Ты должен найти кодовое слово для каждого этапа.\n"
+            "Попробуй прямо сейчас – введи кодовое слово первого этапа."
+        )
 @bot.message_handler(func=lambda m: True, content_types=['text'])
 def handle_text(message):
     uid = message.from_user.id

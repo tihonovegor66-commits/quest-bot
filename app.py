@@ -95,7 +95,7 @@ def start(message):
 def help_command(message):
     bot.reply_to(
         message,
-        "Если вы застряли, напишите.\n"
+        "Если вы застряли, напишите @dobriy_led.\n"
         "Чтобы начать квест заново, отправьте команду /start."
     )
 @bot.message_handler(func=lambda m: True, content_types=['text'])
